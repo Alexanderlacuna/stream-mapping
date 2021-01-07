@@ -11,8 +11,6 @@ app.config['SECRET_KEY'] = 'secret'
 counter = 0
 socketio=SocketIO(app,cors_allowed_origins="*")
 def mock_mapping_computation(req_data):
-
-  print(f"the request data is {req_data}")
   # mock computation
   # time.sleep(0.1)
   return {"result_A":req_data["mapping_method"],"result_B":req_data["mapping_two"],"result_C":req_data["mapping_three"]}
@@ -20,8 +18,6 @@ def mock_mapping_computation(req_data):
 
 @socketio.on("do_mapping")
 def handle_form(data):
-  print(data)
-
   results  = mock_mapping_computation(data)
 
 
