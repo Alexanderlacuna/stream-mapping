@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+
+
+<body>
+
+
+	<div>
+		<div class="progress">
+  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40"
+  aria-valuemin="0" aria-valuemax="100" style="width:10%">
+    40% (mapping results A)
+  </div>
+</div>
+
+<div class="progress">
+  <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="50"
+  aria-valuemin="0" aria-valuemax="100" style="width:50%">
+    <p><span>50% </span>(mapping results B)</p>
+  </div>
+</div>
+
+<div class="progress">
+  <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60"
+  aria-valuemin="0" aria-valuemax="1" style="width:60%">
+  <p><span>0.4 </span>(P value)</p>
+  </div>
+</div>
+	</div>
+
+	<div style="margin-top: 5px">
+		<form action="" id="mappingForm">
+			<div class="form-field">
+				<label>Mapping method</label>
+				<input type="text" name="mapping_method">
+			</div>
+			<div class="form-field">
+				<label>Mapping 2</label>
+				<input type="text" name="mapping_two">
+			</div>
+			<div class="form-field">
+				<label>Mapping 3</label>
+				<input type="text" name="mapping_three">
+			</div>
+
+			<div class="form-button">
+				<button type="submit" style="display: block;padding: 10px 15px;">Submit</button>
+			</div>
+		</form>
+	</div>
+
+	<style type="text/css">
+
+		body {
+			margin-top:30px;
+		}
+		.form-field{
+			margin-top: 10px;
+		}
+
+		.form-button {
+			padding:6px 8px;
+		}
+	</style>
+<!-- Latest compiled and minified CSS -->
+
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.5/socket.io.js" integrity="sha512-2rUSTSAeOO02jF6eBqENNqPs1EohenJ5j+1dgDPdXSLz9nOlrr8DJk4zW/lDy8rjhGCSonW3Gx812XJQIKZKJQ==" crossorigin="anonymous"></script>	
+<script type="text/javascript" charset="utf-8">
+
+
+	function barSetter(data){
+
+		let setterFunction = (className,strength)=>{
+			className.style.width = `${strength}%`
+		}
+		let success = document.querySelector(".progress-bar-success")
+
+    	let info = document.querySelector(".progress-bar-info")
+
+    	let warning =  document.querySelector(".progress-bar-warning")
+
+
+    	setterFunction(success,data[0])
+    	setterFunction(info,data[1])
+    	setterFunction(warning,data[2])
+
+	}
+
+
+	var formEl = document.forms.mappingForm;
+	formEl.addEventListener("submit",(e)=>{
+		e.preventDefault()
+
+		data=new FormData(formEl)
+
+		let [mapping_method,mapping_two,mapping_three] = [...data].map((data,i)=>{
+			return data[1]
+		})
+
+		form_obj = {
+			mapping_method,
+			mapping_two,
+			mapping_three
+		}
+		let  socket = io('http://127.0.0.1:5000');
+
+		socket.on("connect",function(){
+			socket.emit("do_mapping",form_obj)
+		})
+
+		socket.on("mapping_results",(data)=>{
+			let  results = Object.values(data)
+			barSetter(results)
+		})
+
+
+
+		
+		// console.log(`console.log here ${results}`)
+		// data.
+		
+	})
+</script>
+</body>
+
+
+</html>
