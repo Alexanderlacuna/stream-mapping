@@ -1,14 +1,11 @@
 import os
 import time
-from flask import Flask,jsonify,render_template,request
+from flask import Flask,render_template
 from flask_socketio import SocketIO,emit
-from flask_cors import CORS
-
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'secret'
-counter = 0
+app.config['SECRET_KEY'] = os.urandom(16)
 socketio=SocketIO(app,cors_allowed_origins="*")
 def mock_mapping_computation(req_data):
   # mock computation
